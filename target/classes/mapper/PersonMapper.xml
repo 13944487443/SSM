@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.PersonMapper">
+
+	<!--实体映射-->
+	<resultMap id="personInfoResultMap" type="entity.Person">
+		<!--主键-->
+		<id property="id" column="id" />
+		<!--姓名-->
+		<result property="name" column="name" />
+		<!--性别-->
+		<result property="sex" column="sex"/>
+		<!--年龄-->
+		<result property="age" column="age"/>
+	</resultMap>
+
+	<!-- 通用查询结果列-->
+	<sql id="Person">
+		 	id,	name,sex,age
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="findById" resultMap="personInfoResultMap" parameterType="java.lang.String">
+		 SELECT
+		 <include refid="Person" />
+		 FROM person
+		 WHERE id = #{id}
+	</select>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="deleteById" parameterType="java.lang.String">
+		 DELETE FROM person
+		 WHERE id = #{id}
+	</delete>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insert" parameterType="entity.Person">
+		 INSERT INTO person
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">
+				 id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			 <if test="age != null">
+				 age,
+			 </if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id!=null">
+				 #{id},
+			</if>
+			<if test="name!=null">
+				 #{name},
+			</if>
+			<if test="sex!=null">
+				 #{sex},
+			</if>
+			 <if test="age!=null">
+				 #{age},
+			 </if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateById" parameterType="entity.Person">
+		 UPDATE person
+ 		 <set> 
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="sex != null">
+				 sex = #{sex},
+			</if>
+			 <if test="age != null">
+				 age = #{age},
+			 </if>
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<!--查询全部-->
+	<select id="findAll" resultMap="personInfoResultMap">
+		SELECT
+		<include refid="Person" />
+		FROM person
+	</select>
+</mapper>
